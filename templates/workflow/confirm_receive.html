@@ -1,0 +1,89 @@
+{% extends 'workflow/base.html' %}
+
+{% block title %}受付処理 - {{ application.application_number }} - 業務ワークフローシステム{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0"><i class="bi bi-inbox"></i> 受付処理</h4>
+            </div>
+            <div class="card-body">
+                <!-- 申請情報サマリー -->
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">申請情報</h5>
+                    <hr>
+                    <p class="mb-1"><strong>申請番号:</strong> {{ application.application_number }}</p>
+                    <p class="mb-1"><strong>申請種別:</strong> {{ application.get_application_type_display }}</p>
+                    <p class="mb-1"><strong>タイトル:</strong> {{ application.title }}</p>
+                    <p class="mb-1"><strong>申請企業:</strong> {{ application.company_name }}</p>
+                    <p class="mb-0"><strong>申請者:</strong> {{ application.applicant.username }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <a href="{% url 'workflow:detail' application.pk %}" class="btn btn-outline-primary" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i> 申請詳細を別タブで開く
+                    </a>
+                </div>
+
+                <!-- 処理フォーム -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">コメント</label>
+                        <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="受付に関するコメントを入力してください"></textarea>
+                        <div class="form-text">申請者へ通知されます</div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>確認:</strong> この操作は取り消せません。内容を確認して処理を選択してください。
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-between">
+                        <a href="{% url 'workflow:detail' application.pk %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> キャンセル
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="submit" name="action" value="return" class="btn btn-warning" 
+                                    onclick="return confirm('この申請を差し戻しますか？\n申請者に修正を依頼します。');">
+                                <i class="bi bi-arrow-return-left"></i> 差し戻し
+                            </button>
+                            <button type="submit" name="action" value="receive" class="btn btn-success" 
+                                    onclick="return confirm('この申請を受付しますか？\n承認者へ通知されます。');">
+                                <i class="bi bi-check-circle"></i> 受付する
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ヘルプ -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> 受付処理について</h6>
+            </div>
+            <div class="card-body">
+                <h6>受付する場合:</h6>
+                <ul class="mb-3">
+                    <li>申請内容に問題がない場合に選択します</li>
+                    <li>承認者へメール通知が送信されます</li>
+                    <li>申請者へ受付完了の通知が送信されます</li>
+                    <li>ステータスが「受付済」になります</li>
+                </ul>
+                
+                <h6>差し戻す場合:</h6>
+                <ul class="mb-0">
+                    <li>申請内容に不備や不足がある場合に選択します</li>
+                    <li>申請者へメール通知が送信されます</li>
+                    <li>コメント欄に修正内容を必ず記載してください</li>
+                    <li>申請者は修正後、再度提出できます</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

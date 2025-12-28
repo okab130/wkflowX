@@ -1,0 +1,35 @@
+# Django業務ワークフローシステム - 必要パッケージ
+
+# Djangoフレームワーク（コア）
+Django==4.2.7
+
+# 画像処理（添付ファイル・メディア管理）
+Pillow==11.0.0
+
+# 環境変数管理
+python-decouple==3.8
+
+# データベース（PostgreSQL使用時のみ必要）
+psycopg2-binary==2.9.11
+
+# タイムゾーン処理
+pytz==2023.3
+
+# 開発用ツール（オプション）
+# django-debug-toolbar==4.2.0
+# django-extensions==3.2.3
+
+# セキュリティスキャン（オプション）
+# bandit==1.7.5
+# safety==2.3.5
+
+# コード品質チェック（オプション）
+# flake8==6.1.0
+# pylint==3.0.2
+# black==23.11.0
+
+# テスト関連（オプション）
+# pytest==7.4.3
+# pytest-django==4.7.0
+# coverage==7.3.2
+# factory-boy==3.3.0

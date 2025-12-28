@@ -1,0 +1,358 @@
+{% extends 'workflow/base.html' %}
+
+{% block title %}{% if object %}申請編集{% else %}新規申請{% endif %} - 業務ワークフローシステム{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-section h5 {
+        margin-bottom: 1rem;
+        color: #495057;
+    }
+    .required-mark::after {
+        content: " *";
+        color: red;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-file-earmark-plus"></i>
+                    {% if object %}申請編集{% else %}新規申請作成{% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="applicationForm">
+                    {% csrf_token %}
+                    
+                    <!-- エラー表示 -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- 基本情報 -->
+                    <div class="form-section">
+                        <h5><i class="bi bi-info-circle"></i> 基本情報</h5>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.application_type.id_for_label }}" class="form-label required-mark">申請種別</label>
+                            {{ form.application_type }}
+                            {% if form.application_type.errors %}
+                            <div class="text-danger">{{ form.application_type.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                申請の種類を選択してください。選択により必須項目が変わります。
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label required-mark">タイトル</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="text-danger">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="form-label required-mark">申請内容詳細</label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                            <div class="text-danger">{{ form.content.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- 作業情報 -->
+                    <div class="form-section" id="work-section">
+                        <h5><i class="bi bi-tools"></i> 作業情報</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.work_location.id_for_label }}" class="form-label">作業場所</label>
+                                {{ form.work_location }}
+                                {% if form.work_location.errors %}
+                                <div class="text-danger">{{ form.work_location.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.worker_count.id_for_label }}" class="form-label">作業人数</label>
+                                {{ form.worker_count }}
+                                {% if form.worker_count.errors %}
+                                <div class="text-danger">{{ form.worker_count.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.work_start_date.id_for_label }}" class="form-label">作業開始予定日</label>
+                                {{ form.work_start_date }}
+                                {% if form.work_start_date.errors %}
+                                <div class="text-danger">{{ form.work_start_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.work_end_date.id_for_label }}" class="form-label">作業終了予定日</label>
+                                {{ form.work_end_date }}
+                                {% if form.work_end_date.errors %}
+                                <div class="text-danger">{{ form.work_end_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.contractor_name.id_for_label }}" class="form-label">施工業者名</label>
+                            {{ form.contractor_name }}
+                            {% if form.contractor_name.errors %}
+                            <div class="text-danger">{{ form.contractor_name.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">工事申請の場合に入力してください</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 工具情報 -->
+                    <div class="form-section" id="tool-section">
+                        <h5><i class="bi bi-wrench"></i> 工具情報</h5>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.tool_list.id_for_label }}" class="form-label">持込工具リスト</label>
+                            {{ form.tool_list }}
+                            {% if form.tool_list.errors %}
+                            <div class="text-danger">{{ form.tool_list.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- 制限エリア情報 -->
+                    <div class="form-section" id="restricted-section">
+                        <h5><i class="bi bi-shield-lock"></i> 制限エリア情報</h5>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.restricted_area.id_for_label }}" class="form-label">制限エリア名</label>
+                            {{ form.restricted_area }}
+                            {% if form.restricted_area.errors %}
+                            <div class="text-danger">{{ form.restricted_area.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.entry_purpose.id_for_label }}" class="form-label">立入目的</label>
+                            {{ form.entry_purpose }}
+                            {% if form.entry_purpose.errors %}
+                            <div class="text-danger">{{ form.entry_purpose.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.entry_members.id_for_label }}" class="form-label">立入者リスト</label>
+                            {{ form.entry_members }}
+                            {% if form.entry_members.errors %}
+                            <div class="text-danger">{{ form.entry_members.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- 添付ファイル -->
+                    <div class="form-section" id="attachment-section">
+                        <h5><i class="bi bi-paperclip"></i> 添付ファイル</h5>
+                        
+                        {% if object and object.attachments.all %}
+                        <div class="mb-3">
+                            <label class="form-label">現在の添付ファイル</label>
+                            <ul class="list-group">
+                                {% for attachment in object.attachments.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-file-earmark"></i>
+                                        <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file_name }}</a>
+                                        <small class="text-muted">({{ attachment.file_size|filesizeformat }})</small>
+                                    </div>
+                                    <span class="badge bg-secondary">{{ attachment.uploaded_at|date:"Y/m/d H:i" }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="attachments" class="form-label">ファイルを追加</label>
+                            <input type="file" class="form-control" id="attachments" name="attachments" multiple
+                                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.zip">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> 
+                                複数ファイル選択可能。対応形式: PDF, Word, Excel, 画像(JPG/PNG), ZIP (各ファイル10MB以下)<br>
+                                <strong>※ファイルは「下書き保存」または「申請提出」ボタンを押すと同時に保存されます</strong>
+                            </div>
+                            <div id="file-preview" class="mt-2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- ボタン -->
+                    <div class="d-flex gap-2 justify-content-between">
+                        <div>
+                            <a href="{% url 'workflow:dashboard' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> キャンセル
+                            </a>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" name="save" class="btn btn-outline-primary">
+                                <i class="bi bi-save"></i> 下書き保存
+                            </button>
+                            <button type="submit" name="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> 申請提出
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- ヘルプカード -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-question-circle"></i> 申請種別ごとの必須項目</h6>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="helpAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help1">
+                                作業申請
+                            </button>
+                        </h2>
+                        <div id="help1" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <strong>必須項目:</strong> 作業場所、作業開始予定日、作業人数
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help2">
+                                工事申請
+                            </button>
+                        </h2>
+                        <div id="help2" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <strong>必須項目:</strong> 工事場所、工事開始予定日、工事終了予定日、施工業者名、工事人数、添付ファイル（図面）
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help3">
+                                工具持込申請
+                            </button>
+                        </h2>
+                        <div id="help3" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <strong>必須項目:</strong> 持込工具リスト、使用開始予定日、返却予定日
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help4">
+                                制限エリア立入申請
+                            </button>
+                        </h2>
+                        <div id="help4" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <strong>必須項目:</strong> 制限エリア名、立入目的、立入者リスト、立入予定日
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help5">
+                                制限エリア工具持込申請
+                            </button>
+                        </h2>
+                        <div id="help5" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <strong>必須項目:</strong> 制限エリア名、持込工具リスト、立入者リスト、使用開始予定日
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 申請種別に応じたセクション表示制御
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('id_application_type');
+        
+        function updateSections() {
+            const selectedType = typeSelect.value;
+            const workSection = document.getElementById('work-section');
+            const toolSection = document.getElementById('tool-section');
+            const restrictedSection = document.getElementById('restricted-section');
+            
+            // すべて非表示
+            workSection.style.display = 'none';
+            toolSection.style.display = 'none';
+            restrictedSection.style.display = 'none';
+            
+            // 申請種別に応じて表示
+            if (selectedType === 'work' || selectedType === 'construction') {
+                workSection.style.display = 'block';
+            }
+            
+            if (selectedType === 'tool_bringin' || selectedType === 'restricted_tool') {
+                toolSection.style.display = 'block';
+            }
+            
+            if (selectedType === 'restricted_entry' || selectedType === 'restricted_tool') {
+                restrictedSection.style.display = 'block';
+            }
+        }
+        
+        typeSelect.addEventListener('change', updateSections);
+        updateSections(); // 初期表示
+        
+        // ファイル選択時のプレビュー表示
+        const fileInput = document.getElementById('attachments');
+        const filePreview = document.getElementById('file-preview');
+        
+        fileInput.addEventListener('change', function(e) {
+            filePreview.innerHTML = '';
+            
+            if (this.files.length > 0) {
+                const fileList = document.createElement('div');
+                fileList.className = 'alert alert-info';
+                
+                let html = '<strong><i class="bi bi-check-circle"></i> 選択されたファイル:</strong><ul class="mb-0 mt-2">';
+                
+                Array.from(this.files).forEach(file => {
+                    const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                    html += `<li>${file.name} (${sizeMB} MB)</li>`;
+                });
+                
+                html += '</ul>';
+                fileList.innerHTML = html;
+                filePreview.appendChild(fileList);
+            }
+        });
+    });
+</script>
+{% endblock %}

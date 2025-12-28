@@ -1,0 +1,91 @@
+{% extends 'workflow/base.html' %}
+
+{% block title %}承認処理 - {{ application.application_number }} - 業務ワークフローシステム{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-check-circle"></i> 承認処理</h4>
+            </div>
+            <div class="card-body">
+                <!-- 申請情報サマリー -->
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">申請情報</h5>
+                    <hr>
+                    <p class="mb-1"><strong>申請番号:</strong> {{ application.application_number }}</p>
+                    <p class="mb-1"><strong>申請種別:</strong> {{ application.get_application_type_display }}</p>
+                    <p class="mb-1"><strong>タイトル:</strong> {{ application.title }}</p>
+                    <p class="mb-1"><strong>申請企業:</strong> {{ application.company_name }}</p>
+                    <p class="mb-1"><strong>申請者:</strong> {{ application.applicant.username }}</p>
+                    <p class="mb-0"><strong>受付日時:</strong> {{ application.received_at|date:"Y/m/d H:i" }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <a href="{% url 'workflow:detail' application.pk %}" class="btn btn-outline-primary" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i> 申請詳細を別タブで開く
+                    </a>
+                </div>
+
+                <!-- 処理フォーム -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">コメント <span class="text-danger">*</span></label>
+                        <textarea name="comment" id="comment" class="form-control" rows="4" 
+                                  placeholder="承認/却下の理由やコメントを入力してください" required></textarea>
+                        <div class="form-text">申請者へ通知されます（必須）</div>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>重要:</strong> この操作は取り消せません。慎重に判断してください。
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-between">
+                        <a href="{% url 'workflow:detail' application.pk %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> キャンセル
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="submit" name="action" value="reject" class="btn btn-danger" 
+                                    onclick="return confirm('この申請を却下しますか？\nこの操作は取り消せません。');">
+                                <i class="bi bi-x-circle"></i> 却下する
+                            </button>
+                            <button type="submit" name="action" value="approve" class="btn btn-success" 
+                                    onclick="return confirm('この申請を承認しますか？\nこの操作は取り消せません。');">
+                                <i class="bi bi-check-circle"></i> 承認する
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ヘルプ -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> 承認処理について</h6>
+            </div>
+            <div class="card-body">
+                <h6>承認する場合:</h6>
+                <ul class="mb-3">
+                    <li>申請内容を承認する場合に選択します</li>
+                    <li>申請者へ承認完了の通知が送信されます</li>
+                    <li>ステータスが「承認済」になります</li>
+                    <li>承認後は変更できません</li>
+                </ul>
+                
+                <h6>却下する場合:</h6>
+                <ul class="mb-0">
+                    <li>申請内容を承認できない場合に選択します</li>
+                    <li>申請者へ却下通知が送信されます</li>
+                    <li>コメント欄に却下理由を必ず記載してください</li>
+                    <li>却下後は再申請が必要になります</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

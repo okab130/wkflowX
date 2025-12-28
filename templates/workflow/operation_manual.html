@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運用マニュアル - 業務ワークフローシステム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 60px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            width: 280px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            overflow-y: auto;
+            border-right: 1px solid #dee2e6;
+        }
+        .content {
+            margin-left: 300px;
+            padding: 30px;
+        }
+        .sidebar-link {
+            display: block;
+            padding: 8px 15px;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .sidebar-link:hover {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .sidebar-link.active {
+            background-color: #f093fb;
+            color: white;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section h2 {
+            color: #f093fb;
+            border-bottom: 2px solid #f093fb;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        .section h3 {
+            color: #f5576c;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .step {
+            background-color: #f8f9fa;
+            border-left: 4px solid #f093fb;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tip {
+            background-color: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #856404;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .critical {
+            background-color: #f8d7da;
+            border-left: 4px solid #721c24;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .command-box {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f093fb;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .back-to-top:hover {
+            background-color: #f5576c;
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/workflow/">
+                <i class="bi bi-gear-fill"></i> 業務ワークフローシステム - 運用マニュアル
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/workflow/">
+                    <i class="bi bi-house-door"></i> ダッシュボードに戻る
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- サイドバー -->
+    <div class="sidebar">
+        <h5 class="mb-3"><i class="bi bi-book"></i> 目次</h5>
+        <a href="#overview" class="sidebar-link">運用マニュアル概要</a>
+        <a href="#system-architecture" class="sidebar-link">システム構成</a>
+        <a href="#installation" class="sidebar-link">インストール・セットアップ</a>
+        <a href="#user-management" class="sidebar-link">ユーザー管理</a>
+        <a href="#role-management" class="sidebar-link">ロール管理</a>
+        <a href="#application-type-config" class="sidebar-link">申請種別設定</a>
+        <a href="#backup" class="sidebar-link">バックアップ</a>
+        <a href="#monitoring" class="sidebar-link">監視</a>
+        <a href="#maintenance" class="sidebar-link">定期メンテナンス</a>
+        <a href="#troubleshooting-admin" class="sidebar-link">トラブルシューティング</a>
+        <a href="#security" class="sidebar-link">セキュリティ</a>
+        <a href="#upgrade" class="sidebar-link">アップグレード</a>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="content">
+        <!-- 概要 -->
+        <section id="overview" class="section">
+            <h2><i class="bi bi-info-circle"></i> 運用マニュアル概要</h2>
+            <p>この運用マニュアルは、システム管理者向けのガイドです。</p>
+            <p>システムのインストール、設定、ユーザー管理、バックアップ、トラブルシューティング等の運用に必要な情報を記載しています。</p>
+            
+            <h3>対象読者</h3>
+            <ul>
+                <li>システム管理者</li>
+                <li>サーバー管理者</li>
+                <li>運用担当者</li>
+            </ul>
+
+            <h3>前提知識</h3>
+            <ul>
+                <li>Linux/Windowsの基本操作</li>
+                <li>Pythonの基礎知識</li>
+                <li>Djangoフレームワークの基礎</li>
+                <li>PostgreSQLの基礎</li>
+                <li>ネットワークの基礎知識</li>
+            </ul>
+        </section>
+
+        <!-- システム構成 -->
+        <section id="system-architecture" class="section">
+            <h2><i class="bi bi-diagram-3"></i> システム構成</h2>
+            
+            <h3>技術スタック</h3>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>カテゴリ</th>
+                        <th>技術</th>
+                        <th>バージョン</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>プログラミング言語</td>
+                        <td>Python</td>
+                        <td>3.13+</td>
+                    </tr>
+                    <tr>
+                        <td>Webフレームワーク</td>
+                        <td>Django</td>
+                        <td>4.2.7</td>
+                    </tr>
+                    <tr>
+                        <td>データベース</td>
+                        <td>PostgreSQL</td>
+                        <td>12+</td>
+                    </tr>
+                    <tr>
+                        <td>Webサーバー（本番）</td>
+                        <td>Nginx + Gunicorn</td>
+                        <td>最新安定版</td>
+                    </tr>
+                    <tr>
+                        <td>キャッシュ</td>
+                        <td>Django Cache Framework</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>ディレクトリ構成</h3>
+            <div class="command-box">
+wkflowX/
+├── config/                 # プロジェクト設定
+│   ├── settings.py        # Django設定ファイル
+│   ├── urls.py            # URLルーティング
+│   └── wsgi.py            # WSGI設定
+├── workflow/              # メインアプリケーション
+│   ├── models.py          # データモデル
+│   ├── views.py           # ビュー
+│   ├── forms.py           # フォーム
+│   ├── admin.py           # 管理画面設定
+│   └── migrations/        # データベースマイグレーション
+├── templates/             # HTMLテンプレート
+│   └── workflow/
+├── staticfiles/           # 静的ファイル
+├── media/                 # アップロードファイル
+├── venv/                  # Python仮想環境
+├── manage.py              # Django管理コマンド
+└── requirements.txt       # Python依存パッケージ
+            </div>
+        </section>
+
+        <!-- インストール・セットアップ -->
+        <section id="installation" class="section">
+            <h2><i class="bi bi-download"></i> インストール・セットアップ</h2>
+            
+            <h3>1. システム要件</h3>
+            <ul>
+                <li><strong>OS:</strong> Windows 10/11, Linux (Ubuntu 20.04+), macOS 11+</li>
+                <li><strong>CPU:</strong> 2コア以上</li>
+                <li><strong>メモリ:</strong> 4GB以上（推奨: 8GB）</li>
+                <li><strong>ディスク:</strong> 10GB以上の空き容量</li>
+            </ul>
+
+            <h3>2. 必要なソフトウェア</h3>
+            <ul>
+                <li>Python 3.13以上</li>
+                <li>PostgreSQL 12以上</li>
+                <li>Git</li>
+            </ul>
+
+            <h3>3. インストール手順（Windows）</h3>
+            
+            <div class="step">
+                <strong>ステップ1: リポジトリのクローン</strong>
+                <div class="command-box mt-2">
+git clone https://github.com/yourcompany/wkflowX.git
+cd wkflowX
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ2: 仮想環境の作成と有効化</strong>
+                <div class="command-box mt-2">
+python -m venv venv
+venv\Scripts\activate
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ3: 依存パッケージのインストール</strong>
+                <div class="command-box mt-2">
+pip install -r requirements.txt
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ4: データベースの作成</strong>
+                <div class="command-box mt-2">
+# PostgreSQLにログイン
+psql -U postgres
+
+# データベース作成
+CREATE DATABASE wkflowx;
+CREATE SCHEMA wkflowx;
+\q
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ5: 環境変数の設定</strong>
+                <p class="mt-2">config/settings.pyのデータベース設定を更新：</p>
+                <div class="command-box mt-2">
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'pass',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c search_path=wkflowx'
+        }
+    }
+}
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ6: マイグレーションの実行</strong>
+                <div class="command-box mt-2">
+python manage.py migrate
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ7: スーパーユーザーの作成</strong>
+                <div class="command-box mt-2">
+python manage.py createsuperuser
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ8: 静的ファイルの収集</strong>
+                <div class="command-box mt-2">
+python manage.py collectstatic
+                </div>
+            </div>
+
+            <div class="step">
+                <strong>ステップ9: サーバー起動</strong>
+                <div class="command-box mt-2">
+python manage.py runserver
+                </div>
+                <p class="mt-2">ブラウザで http://127.0.0.1:8000/ にアクセス</p>
+            </div>
+        </section>
+
+        <!-- ユーザー管理 -->
+        <section id="user-management" class="section">
+            <h2><i class="bi bi-people"></i> ユーザー管理</h2>
+            
+            <h3>1. 管理画面へのアクセス</h3>
+            <p>http://127.0.0.1:8000/admin/ にアクセスし、スーパーユーザーでログインします。</p>
+
+            <h3>2. 新規ユーザーの作成</h3>
+            <ol>
+                <li>管理画面の「ユーザー」をクリック</li>
+                <li>右上の「ユーザーを追加」ボタンをクリック</li>
+                <li>ユーザー名とパスワードを入力</li>
+                <li>「保存」ボタンをクリック</li>
+                <li>詳細情報（メールアドレス、名前等）を入力</li>
+                <li>「ユーザープロファイル」セクションで役割（role）を選択：
+                    <ul>
+                        <li>vendor: 取引先</li>
+                        <li>receiver: 受付担当</li>
+                        <li>approver: 承認者</li>
+                        <li>admin: 管理者</li>
+                    </ul>
+                </li>
+                <li>「保存」ボタンをクリック</li>
+            </ol>
+
+            <div class="tip">
+                <i class="bi bi-lightbulb"></i> <strong>ヒント:</strong> 
+                初回パスワードをメールで送信し、初回ログイン時に変更させることを推奨します。
+            </div>
+
+            <h3>3. ユーザーの編集</h3>
+            <ol>
+                <li>管理画面の「ユーザー」一覧から対象ユーザーをクリック</li>
+                <li>必要な項目を編集</li>
+                <li>「保存」ボタンをクリック</li>
+            </ol>
+
+            <h3>4. ユーザーの無効化</h3>
+            <p>ユーザーを削除せずに無効化する場合：</p>
+            <ol>
+                <li>対象ユーザーの編集画面を開く</li>
+                <li>「有効」チェックボックスを外す</li>
+                <li>「保存」ボタンをクリック</li>
+            </ol>
+            <p>無効化されたユーザーはログインできなくなります。</p>
+
+            <h3>5. パスワードのリセット</h3>
+            <ol>
+                <li>対象ユーザーの編集画面を開く</li>
+                <li>パスワードセクションの「このフォーム」リンクをクリック</li>
+                <li>新しいパスワードを2回入力</li>
+                <li>「変更」ボタンをクリック</li>
+            </ol>
+        </section>
+
+        <!-- ロール管理 -->
+        <section id="role-management" class="section">
+            <h2><i class="bi bi-shield-check"></i> ロール管理</h2>
+            
+            <h3>1. ワークフローロールとは</h3>
+            <p>ワークフローロールは、受付・承認の役割を細かく管理するための機能です。</p>
+            <p>申請種別ごとに、どのロールが受付・承認を行うかを設定できます。</p>
+
+            <h3>2. ワークフローロールの作成</h3>
+            <ol>
+                <li>管理画面の「ワークフローロール」をクリック</li>
+                <li>「ワークフローロールを追加」ボタンをクリック</li>
+                <li>以下の項目を入力：
+                    <ul>
+                        <li>名前：ロールの名称（例：工事受付チーム）</li>
+                        <li>ロール種別：receiver（受付）またはapprover（承認）</li>
+                        <li>説明：ロールの説明（オプション）</li>
+                        <li>有効：チェックを入れる</li>
+                    </ul>
+                </li>
+                <li>「保存」ボタンをクリック</li>
+            </ol>
+
+            <h3>3. ロールメンバーの追加</h3>
+            <ol>
+                <li>管理画面の「ロールメンバー」をクリック</li>
+                <li>「ロールメンバーを追加」ボタンをクリック</li>
+                <li>以下を選択：
+                    <ul>
+                        <li>ロール：追加先のワークフローロール</li>
+                        <li>ユーザー：追加するユーザー</li>
+                    </ul>
+                </li>
+                <li>「保存」ボタンをクリック</li>
+            </ol>
+
+            <div class="tip">
+                <i class="bi bi-lightbulb"></i> <strong>ヒント:</strong> 
+                1つのロールに複数のユーザーを追加でき、1人のユーザーが複数のロールに所属することも可能です。
+            </div>
+
+            <h3>4. ロールメンバーの削除</h3>
+            <ol>
+                <li>管理画面の「ロールメンバー」一覧から対象を選択</li>
+                <li>アクション欄で「削除」を選択</li>
+                <li>「実行」ボタンをクリック</li>
+            </ol>
+
+            <div class="warning">
+                <i class="bi bi-exclamation-triangle"></i> <strong>注意:</strong> 
+                ロールメンバーを削除すると、そのユーザーは該当ロールの権限を即座に失います。
+            </div>
+        </section>
+
+        <!-- 申請種別設定 -->
+        <section id="application-type-config" class="section">
+            <h2><i class="bi bi-sliders"></i> 申請種別設定</h2>
+            
+            <h3>1. 申請種別設定とは</h3>
+            <p>各申請種別に対して、受付と承認を担当するロールを設定します。</p>
+
+            <h3>2. 申請種別設定の作成</h3>
+            <ol>
+                <li>管理画面の「申請種別設定」をクリック</li>
+                <li>「申請種別設定を追加」ボタンをクリック</li>
+                <li>以下を選択：
+                    <ul>
+                        <li>申請種別：work, construction, restricted_entry等</li>
+                        <li>受付ロール：この申請種別を受付するワークフローロール</li>
+                        <li>承認ロール：この申請種別を承認するワークフローロール</li>
+                        <li>有効：チェックを入れる</li>
+                    </ul>
+                </li>
+                <li>「保存」ボタンをクリック</li>
+            </ol>
+
+            <h3>3. 設定例</h3>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>申請種別</th>
+                        <th>受付ロール</th>
+                        <th>承認ロール</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>工事申請</td>
+                        <td>工事受付チーム</td>
+                        <td>工事承認チーム</td>
+                    </tr>
+                    <tr>
+                        <td>作業申請</td>
+                        <td>一般受付</td>
+                        <td>一般承認</td>
+                    </tr>
+                    <tr>
+                        <td>制限エリア立入申請</td>
+                        <td>セキュリティ受付</td>
+                        <td>セキュリティ承認</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="critical">
+                <i class="bi bi-exclamation-octagon"></i> <strong>重要:</strong> 
+                全ての申請種別に対して設定を作成することを強く推奨します。設定がない場合、フォールバック機能が動作しますが、意図しない動作になる可能性があります。
+            </div>
+        </section>
+
+        <!-- バックアップ -->
+        <section id="backup" class="section">
+            <h2><i class="bi bi-archive"></i> バックアップ</h2>
+            
+            <h3>1. バックアップの重要性</h3>
+            <p>定期的なバックアップは、データ損失を防ぐために必須です。</p>
+
+            <h3>2. データベースのバックアップ</h3>
+            
+            <h4>手動バックアップ</h4>
+            <div class="command-box">
+# PostgreSQLのバックアップ
+pg_dump -U postgres -h localhost -d postgres -n wkflowx -F c -f backup_20251228.dump
+
+# 圧縮してバックアップ
+pg_dump -U postgres -h localhost -d postgres -n wkflowx | gzip > backup_20251228.sql.gz
+            </div>
+
+            <h4>自動バックアップスクリプト（例）</h4>
+            <div class="command-box">
+@echo off
+REM backup_db.bat
+
+set BACKUP_DIR=C:\backups\wkflowx
+set DATE=%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+set FILENAME=backup_%DATE%.dump
+
+pg_dump -U postgres -h localhost -d postgres -n wkflowx -F c -f %BACKUP_DIR%\%FILENAME%
+
+REM 30日以上古いバックアップを削除
+forfiles /p %BACKUP_DIR% /s /m *.dump /d -30 /c "cmd /c del @path"
+            </div>
+
+            <h3>3. メディアファイルのバックアップ</h3>
+            <div class="command-box">
+# mediaディレクトリをバックアップ
+xcopy /E /I /Y media C:\backups\wkflowx\media_%date:~0,4%%date:~5,2%%date:~8,2%
+            </div>
+
+            <h3>4. バックアップスケジュール</h3>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>対象</th>
+                        <th>頻度</th>
+                        <th>保持期間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>データベース</td>
+                        <td>毎日（深夜）</td>
+                        <td>30日</td>
+                    </tr>
+                    <tr>
+                        <td>メディアファイル</td>
+                        <td>毎週</td>
+                        <td>90日</td>
+                    </tr>
+                    <tr>
+                        <td>完全バックアップ</td>
+                        <td>毎月</td>
+                        <td>1年</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>5. リストア（復元）</h3>
+            <div class="command-box">
+# データベースの復元
+pg_restore -U postgres -h localhost -d postgres -n wkflowx -c backup_20251228.dump
+
+# 圧縮ファイルから復元
+gunzip < backup_20251228.sql.gz | psql -U postgres -h localhost -d postgres
+            </div>
+
+            <div class="critical">
+                <i class="bi bi-exclamation-octagon"></i> <strong>重要:</strong> 
+                バックアップの復元テストを定期的に実施してください。バックアップが正常に機能することを確認する必要があります。
+            </div>
+        </section>
+
+        <!-- 監視 -->
+        <section id="monitoring" class="section">
+            <h2><i class="bi bi-graph-up"></i> 監視</h2>
+            
+            <h3>1. 監視すべき項目</h3>
+            <ul>
+                <li>サーバーの稼働状況</li>
+                <li>ディスク使用量</li>
+                <li>データベース接続数</li>
+                <li>エラーログ</li>
+                <li>レスポンス時間</li>
+            </ul>
+
+            <h3>2. ログファイルの確認</h3>
+            
+            <h4>Djangoログ</h4>
+            <div class="command-box">
+# ログファイルの場所（settings.pyで設定）
+# デフォルトではコンソールに出力
+
+# エラーログのみ表示
+python manage.py runserver 2>&1 | findstr "ERROR"
+            </div>
+
+            <h4>PostgreSQLログ</h4>
+            <div class="command-box">
+# PostgreSQLログの場所
+C:\Program Files\PostgreSQL\XX\data\log\
+
+# 最新のログファイルを確認
+type C:\Program Files\PostgreSQL\XX\data\log\postgresql-*.log
+            </div>
+
+            <h3>3. データベースの監視</h3>
+            <div class="command-box">
+# データベース接続数の確認
+psql -U postgres -c "SELECT count(*) FROM pg_stat_activity;"
+
+# アクティブなクエリの確認
+psql -U postgres -c "SELECT pid, state, query FROM pg_stat_activity WHERE state = 'active';"
+
+# データベースサイズの確認
+psql -U postgres -c "SELECT pg_size_pretty(pg_database_size('postgres'));"
+            </div>
+
+            <h3>4. ディスク使用量の確認</h3>
+            <div class="command-box">
+# Windowsの場合
+dir /s C:\Users\user\gh\wkflowX\media
+
+# mediaディレクトリのサイズ確認
+powershell -command "(Get-ChildItem -Path 'C:\Users\user\gh\wkflowX\media' -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB"
+            </div>
+
+            <h3>5. パフォーマンス監視</h3>
+            <p>Django Debug Toolbarを使用した監視（開発環境のみ）：</p>
+            <ol>
+                <li>settings.pyでDEBUG_TOOLBAR_CONFIG を設定</li>
+                <li>ページ右側のツールバーでSQLクエリ数を確認</li>
+                <li>N+1問題が発生していないか確認</li>
+            </ol>
+        </section>
+
+        <!-- 定期メンテナンス -->
+        <section id="maintenance" class="section">
+            <h2><i class="bi bi-tools"></i> 定期メンテナンス</h2>
+            
+            <h3>1. 日次メンテナンス</h3>
+            <ul>
+                <li>ログファイルの確認</li>
+                <li>エラーの有無を確認</li>
+                <li>バックアップの成功を確認</li>
+            </ul>
+
+            <h3>2. 週次メンテナンス</h3>
+            <ul>
+                <li>ディスク使用量の確認</li>
+                <li>データベースのバキューム</li>
+                <li>不要なファイルの削除</li>
+            </ul>
+
+            <h4>データベースのバキューム</h4>
+            <div class="command-box">
+# PostgreSQLのバキューム
+psql -U postgres -c "VACUUM ANALYZE;"
+            </div>
+
+            <h3>3. 月次メンテナンス</h3>
+            <ul>
+                <li>ユーザーアカウントの棚卸し</li>
+                <li>ロール設定の見直し</li>
+                <li>古いデータのアーカイブ</li>
+                <li>パフォーマンスの確認</li>
+                <li>セキュリティパッチの適用</li>
+            </ul>
+
+            <h4>古いデータのアーカイブ</h4>
+            <div class="command-box">
+# 1年以上前の承認済み申請をアーカイブ
+python manage.py shell
+
+from workflow.models import Application
+from datetime import datetime, timedelta
+one_year_ago = datetime.now() - timedelta(days=365)
+old_apps = Application.objects.filter(
+    status='approved',
+    approved_at__lt=one_year_ago
+)
+# CSVにエクスポート等の処理
+            </div>
+
+            <h3>4. キャッシュのクリア</h3>
+            <div class="command-box">
+# キャッシュクリア
+python manage.py shell
+
+from django.core.cache import cache
+cache.clear()
+            </div>
+        </section>
+
+        <!-- トラブルシューティング -->
+        <section id="troubleshooting-admin" class="section">
+            <h2><i class="bi bi-bug"></i> トラブルシューティング（管理者向け）</h2>
+            
+            <h3>1. サーバーが起動しない</h3>
+            <p><strong>症状:</strong> python manage.py runserver でエラーが発生</p>
+            <p><strong>確認事項:</strong></p>
+            <ul>
+                <li>仮想環境が有効化されているか</li>
+                <li>requirements.txtの全てのパッケージがインストールされているか</li>
+                <li>PostgreSQLが起動しているか</li>
+                <li>settings.pyのデータベース設定が正しいか</li>
+            </ul>
+
+            <h3>2. データベース接続エラー</h3>
+            <p><strong>症状:</strong> "Error loading psycopg2 or psycopg module"</p>
+            <p><strong>対処法:</strong></p>
+            <div class="command-box">
+# psycopg2のインストール
+pip install psycopg2-binary
+
+# またはpsycopg3
+pip install psycopg[binary]
+            </div>
+
+            <h3>3. マイグレーションエラー</h3>
+            <p><strong>症状:</strong> マイグレーション実行時にエラー</p>
+            <p><strong>対処法:</strong></p>
+            <div class="command-box">
+# マイグレーションの状態確認
+python manage.py showmigrations
+
+# 特定のマイグレーションをロールバック
+python manage.py migrate workflow 0001
+
+# マイグレーションファイルの削除と再作成
+# （注意：開発環境のみ）
+python manage.py migrate workflow zero
+python manage.py makemigrations
+python manage.py migrate
+            </div>
+
+            <h3>4. 静的ファイルが表示されない</h3>
+            <p><strong>対処法:</strong></p>
+            <div class="command-box">
+# 静的ファイルの再収集
+python manage.py collectstatic --clear --no-input
+            </div>
+
+            <h3>5. パフォーマンスが遅い</h3>
+            <p><strong>確認事項:</strong></p>
+            <ul>
+                <li>データベースインデックスの確認</li>
+                <li>N+1問題の有無</li>
+                <li>キャッシュの有効化</li>
+                <li>不要なファイルの削除</li>
+            </ul>
+
+            <div class="command-box">
+# インデックスの確認
+psql -U postgres -d postgres -c "\d workflow_application"
+
+# スロークエリの確認
+psql -U postgres -d postgres -c "SELECT query, calls, total_time FROM pg_stat_statements ORDER BY total_time DESC LIMIT 10;"
+            </div>
+
+            <h3>6. セッションエラー</h3>
+            <p><strong>症状:</strong> ログイン後すぐにログアウトされる</p>
+            <p><strong>対処法:</strong></p>
+            <ul>
+                <li>settings.pyのSESSION_COOKIE_SECUREを確認（HTTPSの場合のみTrue）</li>
+                <li>ブラウザのCookieをクリア</li>
+                <li>セッションテーブルをクリア</li>
+            </ul>
+
+            <div class="command-box">
+# セッションのクリア
+python manage.py clearsessions
+            </div>
+        </section>
+
+        <!-- セキュリティ -->
+        <section id="security" class="section">
+            <h2><i class="bi bi-shield-lock"></i> セキュリティ</h2>
+            
+            <h3>1. 本番環境の設定</h3>
+            <p>本番環境では以下の設定を必ず行ってください：</p>
+
+            <div class="command-box">
+# settings.py
+
+# DEBUG を False に設定
+DEBUG = False
+
+# ALLOWED_HOSTS に実際のドメインを追加
+ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']
+
+# SECRET_KEY を環境変数から読み込む
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+
+# HTTPS の強制
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# セキュリティヘッダー
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+            </div>
+
+            <h3>2. パスワードポリシー</h3>
+            <ul>
+                <li>最小8文字以上</li>
+                <li>英大文字・小文字・数字・記号を含む</li>
+                <li>辞書に載っている単語を避ける</li>
+                <li>定期的な変更（90日ごと）</li>
+            </ul>
+
+            <h3>3. アクセス制限</h3>
+            <ul>
+                <li>管理画面へのIPアドレス制限</li>
+                <li>ファイアウォール設定</li>
+                <li>不要なポートの閉鎖</li>
+            </ul>
+
+            <h3>4. 定期的なセキュリティチェック</h3>
+            <div class="command-box">
+# Djangoのセキュリティチェック
+python manage.py check --deploy
+
+# 依存パッケージの脆弱性チェック
+pip list --outdated
+            </div>
+
+            <h3>5. ログの監視</h3>
+            <p>以下のイベントをログに記録し、定期的に確認：</p>
+            <ul>
+                <li>ログイン失敗</li>
+                <li>権限エラー</li>
+                <li>異常なアクセスパターン</li>
+                <li>データベースエラー</li>
+            </ul>
+        </section>
+
+        <!-- アップグレード -->
+        <section id="upgrade" class="section">
+            <h2><i class="bi bi-arrow-up-circle"></i> アップグレード</h2>
+            
+            <h3>1. アップグレード前の準備</h3>
+            <ol>
+                <li>完全バックアップの取得</li>
+                <li>テスト環境でのアップグレード検証</li>
+                <li>ダウンタイムのスケジュール通知</li>
+            </ol>
+
+            <h3>2. Djangoのアップグレード</h3>
+            <div class="command-box">
+# 現在のバージョン確認
+python -m django --version
+
+# アップグレード
+pip install --upgrade django==4.2.x
+
+# マイグレーションの確認
+python manage.py makemigrations --dry-run
+python manage.py migrate --plan
+            </div>
+
+            <h3>3. 依存パッケージのアップグレード</h3>
+            <div class="command-box">
+# 全パッケージのアップグレード
+pip list --outdated
+pip install --upgrade package_name
+
+# requirements.txtの更新
+pip freeze > requirements.txt
+            </div>
+
+            <h3>4. アップグレード後の確認</h3>
+            <ul>
+                <li>全機能の動作確認</li>
+                <li>エラーログの確認</li>
+                <li>パフォーマンスの確認</li>
+                <li>バックアップの取得</li>
+            </ul>
+
+            <div class="critical">
+                <i class="bi bi-exclamation-octagon"></i> <strong>重要:</strong> 
+                本番環境でのアップグレードは、必ずメンテナンス時間帯に実施してください。
+            </div>
+        </section>
+
+        <!-- お問い合わせ -->
+        <section class="section">
+            <h2><i class="bi bi-envelope"></i> サポート情報</h2>
+            <p>技術的な問題や質問がある場合は、以下までお問い合わせください：</p>
+            
+            <div class="alert alert-info">
+                <strong>開発チーム</strong><br>
+                メール：dev-team@example.com<br>
+                電話：XXX-XXXX-XXXX<br>
+                対応時間：平日 9:00-18:00
+            </div>
+
+            <h3>関連ドキュメント</h3>
+            <ul>
+                <li><a href="/workflow/manual/user/">利用者マニュアル</a></li>
+                <li><a href="https://docs.djangoproject.com/" target="_blank">Django公式ドキュメント</a></li>
+                <li><a href="https://www.postgresql.org/docs/" target="_blank">PostgreSQL公式ドキュメント</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- トップに戻るボタン -->
+    <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="bi bi-arrow-up"></i>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // スクロールに応じてサイドバーのアクティブリンクを更新
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            const links = document.querySelectorAll('.sidebar-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
